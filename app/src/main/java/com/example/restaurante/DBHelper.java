@@ -24,8 +24,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("create table if not exists " + TABLA_USUARIOS + "(" +
                 "id integer primary key autoincrement," +
                 "nombre text,usuario text,contra text,tipo integer)");
-        db.execSQL("INSERT INTO " + TABLA_USUARIOS + " (nombre,usuario,contra) VALUES ('Alisson Bellot Cuba'," +
-                "'admin@gmail.com','123456')");
+        db.execSQL("INSERT INTO " + TABLA_USUARIOS +
+                " (id,nombre,usuario,contra,tipo) VALUES (1,'Alisson Bellot Cuba','admin@gmail.com','1234',1)");
     }
 
     //metodo para borrar tablas y crear de nuevo si se cambia la DB VERSION
