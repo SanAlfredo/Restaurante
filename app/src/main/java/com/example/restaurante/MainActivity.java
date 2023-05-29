@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     //definir mensaje para el Toast
                     String mensaje = "Bienvenido/a: " + c.getString(1);
                     Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_LONG).show();
+
                     edt1.setText("");
                     edt2.setText("");
                 }else{

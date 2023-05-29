@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_orange_dark"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".VerProductos">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.7"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lista de productos"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold|italic" />
+    </LinearLayout>
+    <ListView
+        android:id="@+id/list_prod_total"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="40" />
+
+</LinearLayout>
