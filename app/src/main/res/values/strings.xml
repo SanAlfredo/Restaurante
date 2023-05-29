@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Restaurante</string>
+    <string name="universidad">Universidad de Aquino Bolivia</string>
+    <string name="facultad">Facultad de Ciencias y Tecnología</string>
+    <string name="carrera">Ingeniería de Sistemas</string>
+    <string name="sede">Cochabamba - Sacaba</string>
+    <string name="univ1">Alisson Bellot Cuba</string>
+    <string name="univ2">Mariela Poma Andia</string>
+    <string name="univ3">Jimmy Vladimir Mendez Condori</string>
+    <string name="docente">Ing. Mónica L. Viviana Avila Beltran</string>
+    <string name="user">Usuario</string>
+    <string name="pass">Contraseña</string>
+    <string name="texto1">¿Ha olvidado su contraseña?</string>
+    <string name="texto2">Crear una cuenta</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="nombre">Nombre completo</string>
+    <string name="correo">Correo elctrónico</string>
+    <string name="pass1">Repita la contraseña</string>
+    <string name="registrar">Registrar</string>
+    <string name="recuperar">Recuperar contraseña</string>
+    <string name="titulo1">Restaurante Don Pepe</string>
 </resources>
