@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                edt1.setText("");
+                edt2.setText("");
                 Intent intent = new Intent(MainActivity.this, RegistroUser.class);
                 startActivity(intent);
             }
@@ -82,9 +84,15 @@ public class MainActivity extends AppCompatActivity {
                     //definir mensaje para el Toast
                     String mensaje = "Bienvenido/a: " + c.getString(1);
                     Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_LONG).show();
-
                     edt1.setText("");
                     edt2.setText("");
+                    if (c.getInt(4)==1){
+                        Intent intent =new Intent(MainActivity.this,MenuAdmin.class);
+                        startActivity(intent);
+                    }else {
+                        Intent intent =new Intent(MainActivity.this,MenuUser.class);
+                        startActivity(intent);
+                    }
                 }else{
                     //definir mensaje para la ventana
                     //String mensaje = "Contraseña incorrecta "+pass1+" base de datos "+c.getString(3);
