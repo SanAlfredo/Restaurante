@@ -7,26 +7,36 @@
     android:background="@android:color/holo_orange_dark"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".RegistroUser">
 
     <ImageView
-        android:layout_width="300px"
-        android:layout_height="300px"
-        android:backgroundTintMode="add"
-        app:srcCompat="@drawable/login" />
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/nuevouser" />
 
     <EditText
-        android:id="@+id/et_log_user"
+        android:id="@+id/et_reg_name"
         android:layout_width="800px"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="@string/user"
+        android:hint="@string/nombre"
+        android:inputType="textPersonName"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
+    <EditText
+        android:id="@+id/et_reg_mail"
+        android:layout_width="800px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="@string/correo"
         android:inputType="textEmailAddress"
         android:textSize="20sp"
         android:textStyle="bold|italic" />
 
     <EditText
-        android:id="@+id/et_log_pass"
+        android:id="@+id/et_reg_pass1"
         android:layout_width="800px"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -35,34 +45,23 @@
         android:textSize="20sp"
         android:textStyle="bold|italic" />
 
-    <Button
-        android:id="@+id/btn_log_recu"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/et_reg_pass2"
+        android:layout_width="800px"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:backgroundTint="@android:color/holo_orange_dark"
-        android:text="@string/texto1"
-        android:textColor="?attr/colorPrimaryVariant"
-        android:textSize="16sp"
-        android:textStyle="italic" />
-
-    <Button
-        android:id="@+id/btn_log_new"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@android:color/holo_orange_dark"
-        android:text="@string/texto2"
-        android:textColor="?attr/colorPrimaryVariant"
-        android:textSize="16sp"
-        android:textStyle="italic" />
-
-    <Button
-        android:id="@+id/btn_log_log"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/login"
+        android:hint="@string/pass1"
+        android:inputType="textPassword"
         android:textSize="20sp"
         android:textStyle="bold|italic" />
+
+    <Button
+        android:id="@+id/btn_reg_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/registrar"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
 </LinearLayout>
