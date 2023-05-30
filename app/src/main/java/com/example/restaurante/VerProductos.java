@@ -22,7 +22,9 @@ public class VerProductos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_productos);
+        //enlazar la variable local lista
         list1=findViewById(R.id.list_prod_total);
+        //llamar a la funcion cargar Lista
         cargarLista();
     }
 
@@ -31,7 +33,7 @@ public class VerProductos extends AppCompatActivity {
         ArrayList<String> datos = new ArrayList<String>();
         DBHelper helper = new DBHelper(VerProductos.this);
         SQLiteDatabase db = helper.getReadableDatabase();
-        //la consulta debe hacerse con un inner join para aprovechar la llave foranea
+        //SQL que seleciona todos los elementos de la tabla productos
         String consulta = "select * from productos";
         try {
             Cursor c = db.rawQuery(consulta, null);
