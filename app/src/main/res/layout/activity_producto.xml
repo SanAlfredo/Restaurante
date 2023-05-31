@@ -42,7 +42,7 @@
                 android:hint="Código del producto"
                 android:inputType="number"
                 android:textSize="20sp"
-                android:textStyle="bold|italic"/>
+                android:textStyle="bold|italic" />
         </LinearLayout>
 
         <LinearLayout
@@ -64,37 +64,38 @@
         android:id="@+id/et_prod_nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:hint="Nombre del producto"
         android:textSize="20sp"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold|italic"/>
+        android:textStyle="bold|italic" />
 
     <EditText
         android:id="@+id/et_prod_descripcion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:hint="Descripcion del producto"
         android:textSize="20sp"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold|italic"/>
+        android:textStyle="bold|italic" />
+
     <EditText
         android:id="@+id/et_prod_categoria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:hint="Categoría"
         android:textSize="20sp"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold|italic"/>
+        android:textStyle="bold|italic" />
 
     <EditText
         android:id="@+id/et_prod_precio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Precio en Bs"
-        android:textSize="20sp"
-        android:inputType="numberDecimal"
         android:layout_marginTop="10dp"
-        android:textStyle="bold|italic"/>
+        android:hint="Precio en Bs"
+        android:inputType="numberDecimal"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -107,17 +108,17 @@
             android:id="@+id/btn_prod_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Registrar"
             android:textSize="20sp"
-            android:layout_marginTop="10dp"
             android:textStyle="bold|italic" />
 
         <Button
             android:id="@+id/btn_prod_mod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Modificar"
             android:layout_marginTop="10dp"
+            android:text="Modificar"
             android:textSize="20sp"
             android:textStyle="bold|italic" />
 
