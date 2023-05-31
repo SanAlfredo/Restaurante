@@ -37,11 +37,13 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_user_combo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="COMBOS" />
 
             <Button
+                android:id="@+id/btn_user_pollo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="POLLO" />
@@ -55,12 +57,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_user_soda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="GASEOSA" />
 
             <Button
+                android:id="@+id/btn_user_comp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -74,12 +78,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_user_sand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="SANDWICH" />
 
             <Button
+                android:id="@+id/btn_user_postre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -93,8 +99,9 @@
         android:orientation="vertical">
 
         <ListView
+            android:id="@+id/list_user_pedir"
             android:layout_width="match_parent"
-            android:layout_height="300dp"/>
+            android:layout_height="300dp" />
 
     </LinearLayout>
 
