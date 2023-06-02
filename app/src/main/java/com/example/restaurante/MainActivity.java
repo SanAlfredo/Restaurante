@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     FuncionesHelper funcionesHelper = new FuncionesHelper();
     //peticiones en internet
     RequestQueue requestQueue;
-    private static final String tag = "Loggin activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,27 +87,30 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     String exito = jsonObject.getString("exito");
                     JSONArray jsonArray = jsonObject.getJSONArray("datos");
+                    //si es igual a 1
                     if (exito.equals("1")) {
+                        //recorrer el resultado
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
+                            //obtener los valores
                             String id = object.getString("id");
                             String nombre = object.getString("nombre");
                             String usuario = object.getString("usuario");
                             String contra = object.getString("contra");
                             int tipo = object.getInt("tipo");
-//                            String tipo2= Integer.toString(tipo);
-//                            String mensaje = "bienvenido " + id + " nombre " + nombre + " usuario " + usuario + " contra " + contra + " tipo " + tipo2;
-//                            Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+                            //si las contraseñas son iguales
                             if (pass1.equals(contra)) {
                                 //definir mensaje para el Toast
                                 String mensaje = "Bienvenido/a: " + nombre;
                                 Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_LONG).show();
                                 edt1.setText("");
                                 edt2.setText("");
+                                //si es administrador
                                 if (tipo == 1) {
                                     Intent intent = new Intent(MainActivity.this, MenuAdmin.class);
                                     startActivity(intent);
                                 } else {
+                                    //si no es administrador
                                     Intent intent = new Intent(MainActivity.this, MenuUser.class);
                                     startActivity(intent);
                                 }
@@ -134,32 +136,5 @@ public class MainActivity extends AppCompatActivity {
         });
         requestQueue = Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(request);
-
-//        //generar un vector json de la consulta
-//        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(URL, response -> {
-//            JSONObject jsonObject = null;
-//            Toast.makeText(MainActivity.this,"aqui llega 2 "+user+" y "+pass1,Toast.LENGTH_SHORT).show();
-//            int i;
-//            for (i = 0; i < response.length(); i++) {
-//                //Log.d(tag, "estoy aqui");
-//                try {
-//                    //ejecutamos la consulta dentro un try catch por si hubiera algun error
-//                    jsonObject = response.getJSONObject(i);
-//                    String pass2 = jsonObject.getString("contra");
-//
-//                } catch (Exception e) {
-//                    Toast.makeText(getApplicationContext(), "ERROR " + e.getMessage(),
-//                            Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getApplicationContext(), "ERROR de conexion",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        requestQueue = Volley.newRequestQueue(MainActivity.this);
-//        requestQueue.add(jsonArrayRequest);
     }
 }
