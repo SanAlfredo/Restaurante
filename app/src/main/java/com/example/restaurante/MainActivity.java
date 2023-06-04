@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     FuncionesHelper funcionesHelper = new FuncionesHelper();
     //peticiones en internet
     RequestQueue requestQueue;
+    final static String ip ="192.168.100.77";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     //metodo para buscar usuario en la base de datos
     public void buscarUser(String user, String pass1) {
         //generar la URL que conecta al local host
-        String url = "http:192.168.100.76/ConexionBDRestaurante/buscarUser.php?usuario=" + user + "";
+        String url = "http:"+ip+"/ConexionBDRestaurante/buscarUser.php?usuario=" + user + "";
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
