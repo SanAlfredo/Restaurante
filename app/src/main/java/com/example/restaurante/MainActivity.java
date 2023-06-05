@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             } else {
                                 //definir mensaje para la ventana
-                                //String mensaje = "Contraseña incorrecta "+pass1+" base de datos "+c.getString(3);
                                 String mensaje = "Contraseña incorrecta";
                                 funcionesHelper.ventanaMensaje(MainActivity.this, mensaje);
                             }

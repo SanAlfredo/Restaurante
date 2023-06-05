@@ -1,16 +1,29 @@
 package com.example.restaurante;
 
+import static com.example.restaurante.MainActivity.ip;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Producto extends AppCompatActivity {
     //declaracion de variables locales
@@ -18,8 +31,8 @@ public class Producto extends AppCompatActivity {
     Button btn1, btn2, btn3;
     //funcion que contiene la ventana
     FuncionesHelper funcionesHelper = new FuncionesHelper();
+    RequestQueue requestQueue;
 
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +58,7 @@ public class Producto extends AppCompatActivity {
 
                 } else {
                     //si el campo codigo tiene un elemento entonces lo guardamos en la variable cod
-                    String[] cod = {edt1.getText().toString()};
+                    int cod = Integer.parseInt(edt1.getText().toString());
                     //usamos la funcion creada para buscar por id
                     buscaID(cod);
                 }
@@ -82,14 +95,15 @@ public class Producto extends AppCompatActivity {
                 String categoria = edt4.getText().toString();
                 String precio1 = edt5.getText().toString();
                 //verificar campos vacios
-                if (nombre.isEmpty() || descripcion.isEmpty() || categoria.isEmpty() || precio1.isEmpty()) {
+                if (edt1.getText().toString().isEmpty()||nombre.isEmpty() ||
+                        descripcion.isEmpty() || categoria.isEmpty() || precio1.isEmpty()) {
                     //usando la alerta mensaje
                     funcionesHelper.ventanaMensaje(Producto.this, "Debe llenar los campos:\n" +
                             "\t\t* Nombre del producto\n\t\t* Descripción\n\t\t* Categoria\n\t\t* Precio");
 
                 } else {
                     //mandar el codigo del producto
-                    String[] cod = {edt1.getText().toString()};
+                    int cod = Integer.parseInt(edt1.getText().toString());
                     //convertir a flotante
                     Float precio = Float.parseFloat(precio1);
                     //llamar a la funcion que modifica
@@ -102,79 +116,129 @@ public class Producto extends AppCompatActivity {
 
     //función que guarda los datos de productos en la base de datos
     public void guardarProducto(String nombre, String descripcion, String categoria, Float precio) {
-        //necesario instanciar la clase DBHelper que contiene la conexion a la base de datos
-        DBHelper helper = new DBHelper(Producto.this);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        try {
-            //se colocan los valores en el contenedor
-            ContentValues c = new ContentValues();
-            c.put("nombre", nombre);
-            c.put("descripcion", descripcion);
-            c.put("categoria", categoria);
-            c.put("precio", precio);
-            //se insertan en la base de datos
-            db.insert("productos", null, c);
-            //se cierra la base de datos
-            db.close();
-            // un pequeño mensaje de registrado con exito
-            Toast.makeText(getApplication(), "Registro exitoso", Toast.LENGTH_SHORT).show();
-            //y volver todas las casillas a vacio
-            limpiarProducto();
-        } catch (Exception e) {
-            Toast.makeText(getApplication(), "ERROR " + e, Toast.LENGTH_SHORT).show();
-        }
+        //generar la URL que conecta al local host
+        String url = "http:" + ip + "/ConexionBDRestaurante/regProducto.php?nombre=" + nombre +
+                "&descripcion="+descripcion+"&categoria="+categoria+"&precio="+precio+"";
+        //crear progres dialog por si demora la respuesta
+        final ProgressDialog progressDialog = new ProgressDialog(Producto.this);
+        progressDialog.setMessage("Guardando...");
+        //mostrar la barra de progreso
+        progressDialog.show();
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String exito = jsonObject.getString("exito");
+                    //si es igual a 1
+                    if (exito.equals("1")) {
+                        Toast.makeText(Producto.this,"Registrado con exito",Toast.LENGTH_SHORT).show();
+                        limpiarProducto();
+                        progressDialog.dismiss();
+                    } else {
+                        progressDialog.dismiss();
+                        funcionesHelper.ventanaMensaje(Producto.this, "No se registro");
+                    }
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(Producto.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(Producto.this);
+        requestQueue.add(request);
     }
 
     //funcion que busca por codigo de producto
-    public void buscaID(String[] cod) {
-        //instanciamos data base helper
-        DBHelper helper = new DBHelper(Producto.this);
-        //instanciamos la libreria de sqlite
-        SQLiteDatabase db = helper.getReadableDatabase();
-        //generamos la consulta
-        String consulta = "select * from productos where codigo =?";
-        try {
-            //ejecutamos la consulta dentro un try catch por si hubiera algun error
-            Cursor c = db.rawQuery(consulta, cod);
-            if (c != null && c.getCount() > 0) {
-                c.moveToFirst();
-                //llenar los campos con los valores encontrados
-                edt2.setText(c.getString(1));
-                edt3.setText(c.getString(2));
-                edt4.setText(c.getString(3));
-                edt5.setText(c.getString(4));
-            } else {
-                funcionesHelper.ventanaMensaje(Producto.this, "No existen datos para mostrar");
-                limpiarProducto();
+    public void buscaID(int cod) {
+        //generar la URL que conecta al local host
+        String url = "http:" + ip + "/ConexionBDRestaurante/buscarProductoID.php?id=" + cod + "";
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String exito = jsonObject.getString("exito");
+                    JSONArray jsonArray = jsonObject.getJSONArray("datos");
+                    //si es igual a 1
+                    if (exito.equals("1")) {
+                        //recorrer el resultado
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            //obtener los valores
+                            String id = object.getString("id");
+                            String nombre = object.getString("nombre");
+                            String descripcion = object.getString("descripcion");
+                            String categoria = object.getString("categoria");
+                            String precio = object.getString("precio");
+                            edt2.setText(nombre);
+                            edt3.setText(descripcion);
+                            edt4.setText(categoria);
+                            edt5.setText(precio);
+                        }
+                    } else {
+                        funcionesHelper.ventanaMensaje(Producto.this,
+                                "No existe ese producto");
+                        limpiarProducto();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (Exception e) {
-            Toast.makeText(getApplication(), "ERROR " + e,
-                    Toast.LENGTH_SHORT).show();
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(Producto.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(Producto.this);
+        requestQueue.add(request);
     }
 
-    public void modificarProducto(String[] cod, String nombre, String descripcion, String categoria, Float precio) {
-        //necesario instanciar la clase DBHelper que contiene la conexion a la base de datos
-        DBHelper helper = new DBHelper(Producto.this);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        try {
-            //se colocan los valores en el contenedor
-            ContentValues c = new ContentValues();
-            c.put("nombre", nombre);
-            c.put("descripcion", descripcion);
-            c.put("categoria", categoria);
-            c.put("precio", precio);
-            //actualizamos la tabla
-            db.update("productos", c, "codigo =?", cod);
-            //se cierra la base de datos
-            db.close();
-            // un pequeño mensaje de modificado con exito
-            Toast.makeText(getApplication(), "Modificado con exito", Toast.LENGTH_SHORT).show();
-            //y volver todas las casillas a vacio
-            limpiarProducto();
-        } catch (Exception e) {
-            Toast.makeText(getApplication(), "ERROR " + e, Toast.LENGTH_SHORT).show();
-        }
+    public void modificarProducto(int cod, String nombre, String descripcion, String categoria, Float precio) {
+        //generar la URL que conecta al local host
+        String url = "http:" + ip + "/ConexionBDRestaurante/modProducto.php?nombre=" + nombre +
+                "&descripcion="+descripcion+"&categoria="+categoria+"&precio="+precio+"&id="+cod+"";
+        //crear progres dialog por si demora la respuesta
+        final ProgressDialog progressDialog = new ProgressDialog(Producto.this);
+        progressDialog.setMessage("Modificando...");
+        //mostrar la barra de progreso
+        progressDialog.show();
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String exito = jsonObject.getString("exito");
+                    //si es igual a 1
+                    if (exito.equals("1")) {
+                        Toast.makeText(Producto.this,"Modificado con exito",Toast.LENGTH_SHORT).show();
+                        limpiarProducto();
+                        progressDialog.dismiss();
+                    } else {
+                        progressDialog.dismiss();
+                        funcionesHelper.ventanaMensaje(Producto.this, "No se pudo modificar");
+                    }
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(Producto.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(Producto.this);
+        requestQueue.add(request);
     }
 
     //para limpiar los campos
