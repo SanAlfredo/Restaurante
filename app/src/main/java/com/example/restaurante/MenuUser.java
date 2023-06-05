@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,9 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class MenuUser extends AppCompatActivity {
     //declaracion de variables locales
@@ -47,13 +42,16 @@ public class MenuUser extends AppCompatActivity {
     //variable de tipo array List
     private ArrayList<String> datos = new ArrayList<String>();
     private ArrayList<String> datos1 = new ArrayList<String>();
-    //array list para enviar los datos de este activity al de pago
+    //variables de tipo string vector
     String[] enviar1 = new String[100];
     String[] enviar2 = new String[100];
+    //id de la venta iniciada en 0
     int id_venta = 0;
+    //listado de datos de la pantalla (list View)
     ArrayList<String> listado;
+    //codigo de cliente 3
     int cod_cliente = 3;
-    SendDeviseDetails sendDeviseDetails = new SendDeviseDetails();
+    //un contador iniciado en 0
     int n = 0;
 
     @Override
@@ -290,9 +288,6 @@ public class MenuUser extends AppCompatActivity {
 
     //funcion encargada de llenar el listView
     public void cargarLista(ArrayList<String> datos, ArrayList<String> datos1) {
-        //limpiar los datos que se envian
-//        enviar1.clear();
-//        enviar2.clear();
         //obtiene los datos y los pone en el array adapter
         listado = datos1;
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(MenuUser.this,
@@ -317,8 +312,9 @@ public class MenuUser extends AppCompatActivity {
                 String[] separado = datos.get(i).split(":");
                 Float precio = Float.parseFloat(separado[5].trim());
                 String[] separar1 = separado[1].split("\n");
+                String[] separar2 = separado[2].split("\n");
                 int codigo = Integer.parseInt(separar1[0].trim());
-                String producto = separar1[1].trim();
+                String producto = separar2[0].trim();
                 //enlazamos el alert dialog con nuestro diseño
                 builder.setView(mView);
                 AlertDialog dialog = builder.create();
@@ -327,17 +323,23 @@ public class MenuUser extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         String c = edt1.getText().toString();
+                        //verificar si la cantidad esta vacia
                         if (c.isEmpty()) {
                             Toast.makeText(MenuUser.this, "Debe poner una cantidad ", Toast.LENGTH_SHORT).show();
                         } else {
+                            //convertir la cantidad en flotante y calcular el precio total a pagar
                             Float precio_tot = Float.parseFloat(c) * precio;
+                            //guardar datos en un string
                             String envia1 = "Producto: " + producto + "\nCantidad: " + c + "\nPrecio Unidad: " + precio +
                                     "\nPrecio total: " + precio_tot;
+                            //guardar datos relevantes en otro string
                             String envia2 = "::" + codigo + "::" + c + "::" + precio_tot;
                             enviar1[n] = envia1;
                             enviar2[n] = envia2;
+                            //aumentar el contador
                             n = n + 1;
                             Toast.makeText(MenuUser.this, "guardado el pedido", Toast.LENGTH_SHORT).show();
+                            //cerrar la ventana
                             dialog.dismiss();
                         }
 
@@ -353,11 +355,14 @@ public class MenuUser extends AppCompatActivity {
     public void regVenta() {
         //generar la URL que conecta al local host
         String url = "http:" + ip + "/ConexionBDRestaurante/regVenta.php?codigo=" + cod_cliente + "";
+        //crear progres dialog por si demora la respuesta
         final ProgressDialog progressDialog = new ProgressDialog(MenuUser.this);
         progressDialog.setMessage("Cargando su pedido...");
+        //verificar que el vector no este vacio
         if (vectorVacio(enviar2) == false) {
             Toast.makeText(MenuUser.this, "esta vacio", Toast.LENGTH_SHORT).show();
         } else {
+            //mostrar la barra de progreso
             progressDialog.show();
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
@@ -370,19 +375,19 @@ public class MenuUser extends AppCompatActivity {
                         if (exito.equals("1")) {
                             //obtener id resultado
                             JSONObject object = jsonArray.getJSONObject(0);
-                            //obtener los valores
+                            //obtener id de la venta
                             id_venta = Integer.parseInt(object.getString("id"));
                             progressDialog.dismiss();
                             progressDialog.show();
+                            //ingresar todos los valores del vector en la base de datos (pedidos)
                             for (int i = 0; i < enviar2.length; i++) {
                                 if (enviar2[i] != null) {
-                                    Toast.makeText(MenuUser.this, "paso1", Toast.LENGTH_SHORT).show();
                                     String[] separado = enviar2[i].split("::");
                                     int cod = Integer.parseInt(separado[1].trim());
                                     int can = Integer.parseInt(separado[2].trim());
                                     Float pre = Float.parseFloat(separado[3].trim());
                                     try {
-                                        //Toast.makeText(MenuUser.this, "paso 2 "+separado[3], Toast.LENGTH_SHORT).show();
+                                        //en la direccion del pedido
                                         String url1 = "http:" + ip + "/ConexionBDRestaurante/regPedido.php?codigo1=" + cod +
                                                 "&codigo2=" + id_venta + "&cantidad=" + can + "&precio=" + pre + "";
                                         StringRequest request1 = new StringRequest(Request.Method.POST, url1, new Response.Listener<String>() {
@@ -409,8 +414,21 @@ public class MenuUser extends AppCompatActivity {
                             progressDialog.dismiss();
                             //aqui ir a la otra ventana
                             Intent intent = new Intent(MenuUser.this, FacturaPago.class);
+                            //crear un nuevo vector con los datos a enviar
+                            String[] datos1=new String[n];
+                            //enviar los datos y iniciar nuevamente los vectores
+                            for(int i =0;i<n;i++){
+                                datos1[i]=enviar1[i];
+                                enviar1[i]=null;
+                                enviar2[i]=null;
+                            }
+                            //iniciar el contador en 0
+                            n=0;
+                            //limpiar la lista
+                            list1.setAdapter(null);
+                            //enviar el vector al activity Factura pago
+                            intent.putExtra("datos",datos1);
                             startActivity(intent);
-
                         } else {
                             progressDialog.dismiss();
                             funcionesHelper.ventanaMensaje(MenuUser.this, "no se ingreso");
@@ -431,12 +449,9 @@ public class MenuUser extends AppCompatActivity {
             requestQueue = Volley.newRequestQueue(MenuUser.this);
             requestQueue.add(request);
         }
-//        if (id_venta != 0) {
-//
-//        }
 
     }
-
+    //verificar que el vector tenga datos
     public boolean vectorVacio(String[] vector) {
         boolean respuesta = false;
         for (int i = 0; i < vector.length; i++) {
@@ -449,6 +464,4 @@ public class MenuUser extends AppCompatActivity {
         }
         return respuesta;
     }
-    //Intent intent = new Intent(MenuUser.this, FacturaPago.class);
-    //intent.putExtra("usuario")
 }
