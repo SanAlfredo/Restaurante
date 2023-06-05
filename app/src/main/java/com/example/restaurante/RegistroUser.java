@@ -1,8 +1,12 @@
 package com.example.restaurante;
 
+import static com.example.restaurante.MainActivity.ip;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +14,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class RegistroUser extends AppCompatActivity {
     //declaracion de variables locales
     EditText edt1, edt2, edt3, edt4;
     Button btn1;
     //funcion de ayuda ventana
     FuncionesHelper funcionesHelper = new FuncionesHelper();
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,27 +70,45 @@ public class RegistroUser extends AppCompatActivity {
 
     //función que guarda los datos de productos en la base de datos
     public void guardarUsuario(String nombre, String email, String pass, int tipo) {
-        //necesario instanciar la clase DBHelper que contiene la conexion a la base de datos
-        DBHelper helper = new DBHelper(RegistroUser.this);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        try {
-            //se colocan los valores en el contenedor
-            ContentValues c = new ContentValues();
-            c.put("nombre", nombre);
-            c.put("usuario", email);
-            c.put("contra", pass);
-            c.put("tipo", tipo);
-            //se insertan en la base de datos
-            db.insert("usuarios", null, c);
-            //se cierra la base de datos
-            db.close();
-            // un pequeño mensaje de registrado con exito
-            Toast.makeText(getApplication(), "Registro exitoso", Toast.LENGTH_SHORT).show();
-            //y volver todas las casillas a vacio
-            limpiarRegUser();
-        } catch (Exception e) {
-            Toast.makeText(getApplication(), "ERROR " + e, Toast.LENGTH_SHORT).show();
-        }
+        //generar la URL que conecta al local host
+        String url = "http:" + ip + "/ConexionBDRestaurante/regUser.php?nombre=" + nombre +
+                "&usuario="+email+"&contra="+pass+"&tipo="+tipo+"";
+        //crear progres dialog por si demora la respuesta
+        final ProgressDialog progressDialog = new ProgressDialog(RegistroUser.this);
+        progressDialog.setMessage("Guardando...");
+        //mostrar la barra de progreso
+        progressDialog.show();
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String exito = jsonObject.getString("exito");
+                    //si es igual a 1
+                    if (exito.equals("1")) {
+                        Toast.makeText(RegistroUser.this,"Registrado con exito",Toast.LENGTH_SHORT).show();
+                        limpiarRegUser();
+                        progressDialog.dismiss();
+                        Intent intent=new Intent(RegistroUser.this,MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        progressDialog.dismiss();
+                        funcionesHelper.ventanaMensaje(RegistroUser.this, "No se registro");
+                    }
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                Toast.makeText(RegistroUser.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue = Volley.newRequestQueue(RegistroUser.this);
+        requestQueue.add(request);
     }
 
     //para limpiar los campos

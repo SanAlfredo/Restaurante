@@ -24,7 +24,7 @@
 
     <EditText
         android:id="@+id/et_recu_mail"
-        android:layout_width="800px"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:hint="@string/correo"
@@ -41,4 +41,32 @@
         android:textSize="20sp"
         android:textStyle="bold|italic" />
 
+    <EditText
+        android:id="@+id/et_recu_pass1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Nueva contraseña"
+        android:inputType="textPassword"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
+    <EditText
+        android:id="@+id/et_recu_pass2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Repetir contraseña"
+        android:inputType="textPassword"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
+    <Button
+        android:id="@+id/btn_recu_guardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Guardar contraseña"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
 </LinearLayout>
