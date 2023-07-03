@@ -137,9 +137,11 @@ public class RecuperarContra extends AppCompatActivity {
 
     //metodo para modificar contraseña
     public void modificarUser(String pass) {
+        //transformar la pass en pass encriptada
+        String pass_encript= funcionesHelper.hash_Mac(pass);
         //generar la URL que conecta al local host
         String url = "http:" + ip + "/ConexionBDRestaurante/modUser.php?nombre=" + nombre +
-                "&usuario=" + usuario + "&contra=" + pass + "&tipo=" + tipo + "&id=" + id + "";
+                "&usuario=" + usuario + "&contra=" + pass_encript + "&tipo=" + tipo + "&id=" + id + "";
         //crear progres dialog por si demora la respuesta
         final ProgressDialog progressDialog = new ProgressDialog(RecuperarContra.this);
         progressDialog.setMessage("Modificando...");

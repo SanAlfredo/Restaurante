@@ -30,8 +30,8 @@ public class FacturaPago extends AppCompatActivity {
         list1=findViewById(R.id.list_total);
         img1=findViewById(R.id.iv_qr_generado);
         tv1=findViewById(R.id.tv_total);
+        //datos recibidos del anterior activity Menu User
         String[] recibido=getIntent().getStringArrayExtra("datos");
-        //Toast.makeText(FacturaPago.this,"datos "+recibido[0],Toast.LENGTH_SHORT).show();
         cargarLista(recibido);
         cargarQR(recibido);
     }

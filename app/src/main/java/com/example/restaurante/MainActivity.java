@@ -2,6 +2,7 @@ package com.example.restaurante;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     FuncionesHelper funcionesHelper = new FuncionesHelper();
     //peticiones en internet
     RequestQueue requestQueue;
-    final static String ip ="192.168.100.77";
+    final static String ip = "192.168.100.90";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,12 @@ public class MainActivity extends AppCompatActivity {
     //metodo para buscar usuario en la base de datos
     public void buscarUser(String user, String pass1) {
         //generar la URL que conecta al local host
-        String url = "http:"+ip+"/ConexionBDRestaurante/buscarUser.php?usuario=" + user + "";
+        String url = "http:" + ip + "/ConexionBDRestaurante/buscarUser.php?usuario=" + user + "";
+        //crear un progress dialog
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Obteniendo datos del servidor...");
+        //mostrar la barra de progreso
+        progressDialog.show();
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -90,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jsonArray = jsonObject.getJSONArray("datos");
                     //si es igual a 1
                     if (exito.equals("1")) {
+                        //cerrar el progress dialog
+                        progressDialog.dismiss();
                         //recorrer el resultado
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
@@ -99,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
                             String usuario = object.getString("usuario");
                             String contra = object.getString("contra");
                             int tipo = object.getInt("tipo");
-                            //si las contraseñas son iguales
-                            if (pass1.equals(contra)) {
+                            //verificar si la contraseña encriptada es igual a la proporcionada
+                            if (funcionesHelper.hash_Mac(pass1).equals(contra)) {
                                 //definir mensaje para el Toast
                                 String mensaje = "Bienvenido/a: " + nombre;
                                 Toast.makeText(MainActivity.this, mensaje, Toast.LENGTH_LONG).show();
@@ -112,7 +120,11 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 } else {
                                     //si no es administrador
+                                    String []datos=new String[2];
+                                    datos[0]=id;
+                                    datos[1]=usuario;
                                     Intent intent = new Intent(MainActivity.this, MenuUser.class);
+                                    intent.putExtra("datos",datos);
                                     startActivity(intent);
                                 }
                             } else {
@@ -122,15 +134,18 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     } else {
+                        progressDialog.dismiss();
                         funcionesHelper.ventanaMensaje(MainActivity.this, "El usuario y/o contraseña son incorrectas");
                     }
                 } catch (JSONException e) {
+                    progressDialog.dismiss();
                     e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

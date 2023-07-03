@@ -50,7 +50,7 @@ public class MenuUser extends AppCompatActivity {
     //listado de datos de la pantalla (list View)
     ArrayList<String> listado;
     //codigo de cliente 3
-    int cod_cliente = 3;
+    int cod_cliente = 0;
     //un contador iniciado en 0
     int n = 0;
 
@@ -67,6 +67,9 @@ public class MenuUser extends AppCompatActivity {
         btn6 = findViewById(R.id.btn_user_postre);
         btn8 = findViewById(R.id.btn_user_comprar);
         list1 = findViewById(R.id.list_user_pedir);
+        //datos recibidos del anterior activity Menu User
+        String[] recibido=getIntent().getStringArrayExtra("datos");
+        cod_cliente=Integer.parseInt(recibido[0]);
 
         //boton Combos
         btn1.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +152,22 @@ public class MenuUser extends AppCompatActivity {
                         cargarLista(datos, datos1);
                     }
 
+                    @Override
+                    public void onFail(String msg) {
+                        funcionesHelper.ventanaMensaje(MenuUser.this, "No hay datos que mostrar");
+                    }
+                });
+            }
+        });
+        //boton para postres
+        btn6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                parseCategoria("postres", new Callback() {
+                    @Override
+                    public void onSuccess(ArrayList<String> datos, ArrayList<String> datos1) {
+                        cargarLista(datos,datos1);
+                    }
                     @Override
                     public void onFail(String msg) {
                         funcionesHelper.ventanaMensaje(MenuUser.this, "No hay datos que mostrar");
@@ -263,7 +282,7 @@ public class MenuUser extends AppCompatActivity {
                         }
                         onCallback.onSuccess(datos, datos1);
                     } else {
-                        funcionesHelper.ventanaMensaje(MenuUser.this, "No se encontraron combos");
+                        funcionesHelper.ventanaMensaje(MenuUser.this, "No se encontraron "+busq);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

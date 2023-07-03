@@ -70,9 +70,11 @@ public class RegistroUser extends AppCompatActivity {
 
     //función que guarda los datos de productos en la base de datos
     public void guardarUsuario(String nombre, String email, String pass, int tipo) {
+        //transformar la pass en pass encriptada
+        String pass_encript= funcionesHelper.hash_Mac(pass);
         //generar la URL que conecta al local host
         String url = "http:" + ip + "/ConexionBDRestaurante/regUser.php?nombre=" + nombre +
-                "&usuario="+email+"&contra="+pass+"&tipo="+tipo+"";
+                "&usuario="+email+"&contra="+pass_encript+"&tipo="+tipo+"";
         //crear progres dialog por si demora la respuesta
         final ProgressDialog progressDialog = new ProgressDialog(RegistroUser.this);
         progressDialog.setMessage("Guardando...");
