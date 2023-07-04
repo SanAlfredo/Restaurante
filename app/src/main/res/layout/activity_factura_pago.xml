@@ -48,6 +48,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_pagar_efectivo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pagar al contado" />
+
+        <Button
+            android:id="@+id/btn_pagar_qr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pagar con QR" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="5"
         android:orientation="vertical">
 
@@ -57,5 +76,10 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_pagar_verificar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Verificar el Pago" />
 
 </LinearLayout>

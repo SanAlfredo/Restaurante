@@ -49,8 +49,9 @@ public class MenuUser extends AppCompatActivity {
     int id_venta = 0;
     //listado de datos de la pantalla (list View)
     ArrayList<String> listado;
-    //codigo de cliente 3
+    //inicializar variables de cliente
     int cod_cliente = 0;
+    String nombre_cliente = "";
     //un contador iniciado en 0
     int n = 0;
 
@@ -68,8 +69,11 @@ public class MenuUser extends AppCompatActivity {
         btn8 = findViewById(R.id.btn_user_comprar);
         list1 = findViewById(R.id.list_user_pedir);
         //datos recibidos del anterior activity Menu User
-        String[] recibido=getIntent().getStringArrayExtra("datos");
-        cod_cliente=Integer.parseInt(recibido[0]);
+        String[] recibido = getIntent().getStringArrayExtra("datos");
+        //darle valor al codigo de cliente
+        cod_cliente = Integer.parseInt(recibido[0]);
+        //darle valor al nombre de cliente
+        nombre_cliente = recibido[1];
 
         //boton Combos
         btn1.setOnClickListener(new View.OnClickListener() {
@@ -166,8 +170,9 @@ public class MenuUser extends AppCompatActivity {
                 parseCategoria("postres", new Callback() {
                     @Override
                     public void onSuccess(ArrayList<String> datos, ArrayList<String> datos1) {
-                        cargarLista(datos,datos1);
+                        cargarLista(datos, datos1);
                     }
+
                     @Override
                     public void onFail(String msg) {
                         funcionesHelper.ventanaMensaje(MenuUser.this, "No hay datos que mostrar");
@@ -282,7 +287,7 @@ public class MenuUser extends AppCompatActivity {
                         }
                         onCallback.onSuccess(datos, datos1);
                     } else {
-                        funcionesHelper.ventanaMensaje(MenuUser.this, "No se encontraron "+busq);
+                        funcionesHelper.ventanaMensaje(MenuUser.this, "No se encontraron " + busq);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -434,23 +439,27 @@ public class MenuUser extends AppCompatActivity {
                             //aqui ir a la otra ventana
                             Intent intent = new Intent(MenuUser.this, FacturaPago.class);
                             //crear un nuevo vector con los datos a enviar
-                            String[] datos1=new String[n];
+                            String[] datos1 = new String[n];
+                            String[] datos2 = new String[2];
+                            datos2[0] = String.valueOf(id_venta);
+                            datos2[1] = nombre_cliente;
                             //enviar los datos y iniciar nuevamente los vectores
-                            for(int i =0;i<n;i++){
-                                datos1[i]=enviar1[i];
-                                enviar1[i]=null;
-                                enviar2[i]=null;
+                            for (int i = 0; i < n; i++) {
+                                datos1[i] = enviar1[i];
+                                enviar1[i] = null;
+                                enviar2[i] = null;
                             }
                             //iniciar el contador en 0
-                            n=0;
+                            n = 0;
                             //limpiar la lista
                             list1.setAdapter(null);
                             //enviar el vector al activity Factura pago
-                            intent.putExtra("datos",datos1);
+                            intent.putExtra("datos1", datos1);
+                            intent.putExtra("datos2", datos2);
                             startActivity(intent);
                         } else {
                             progressDialog.dismiss();
-                            funcionesHelper.ventanaMensaje(MenuUser.this, "no se ingreso");
+                            funcionesHelper.ventanaMensaje(MenuUser.this, "No se registró la venta");
 
                         }
                     } catch (JSONException e) {
@@ -470,6 +479,7 @@ public class MenuUser extends AppCompatActivity {
         }
 
     }
+
     //verificar que el vector tenga datos
     public boolean vectorVacio(String[] vector) {
         boolean respuesta = false;
