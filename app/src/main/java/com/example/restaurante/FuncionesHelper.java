@@ -31,7 +31,7 @@ public class FuncionesHelper {
         String hash ="";
         try{
             //convertimos a bytes la palabra secreta o llave "key"
-            byte[] key="secret".getBytes();
+            byte[] key="Udabol".getBytes();
             //con esa llave generamos un algoritmo de encriptacion
             HmacUtils hm256= new HmacUtils(HmacAlgorithms.HMAC_SHA_256,key);
             //encriptamos la contraseña

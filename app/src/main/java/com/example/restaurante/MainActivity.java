@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     FuncionesHelper funcionesHelper = new FuncionesHelper();
     //peticiones en internet
     RequestQueue requestQueue;
-    final static String ip = "192.168.100.90";
+    final static String ip = "192.168.100.91";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

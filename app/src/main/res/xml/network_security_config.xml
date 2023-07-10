@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">192.168.100.0</domain>
-        <domain includeSubdomains="true">192.168.100.90</domain>
+        <domain includeSubdomains="true">192.168.100.91</domain>
         <trust-anchors>
             <certificates src="system" />
             <certificates src="user" />
